@@ -33,7 +33,6 @@
     -webkit-font-smoothing:antialiased;
   }
 
-  /* ============ 容器 ============ */
   #app{
     position:relative;
     width:100%;
@@ -88,7 +87,6 @@
     padding:20px 16px 8px;
   }
 
-  /* ---- 滑动卡片 ---- */
   .swipe-wrap{
     position:relative;
     margin-bottom:14px;
@@ -187,7 +185,6 @@
   .empty-icon{ font-size:52px; margin-bottom:14px; }
   .empty p{ margin:0; font-size:14px; line-height:1.9; }
 
-  /* ---- 底部按钮 ---- */
   .list-footer{
     flex:0 0 auto;
     padding:10px 18px calc(env(safe-area-inset-bottom) + 16px);
@@ -262,19 +259,17 @@
   }
   .save-btn:active{ transform:scale(.94); }
 
-  .detail-body{
+  .detail-content{
     flex:1 1 auto;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-    overscroll-behavior:contain;
-    padding:18px 16px calc(env(safe-area-inset-bottom) + 30px);
     display:flex;
     flex-direction:column;
-    gap:14px;
+    min-height:0;
+    overflow:hidden;
   }
 
-  /* ---- 图解卡片（新增） ---- */
   .chart-card{
+    flex:0 0 auto;
+    margin:14px 16px 0;
     background:#fff;
     border-radius:22px;
     box-shadow:0 5px 18px rgba(255,143,177,.12);
@@ -313,10 +308,16 @@
   }
   .mini-btn:active{ background:#ffe0ee; transform:scale(.95); }
 
-  .chart-body{ padding:0 14px 14px; }
+  .chart-body{
+    padding:0 14px 14px;
+    max-height:34vh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+  }
   .chart-body img{
     width:100%;
-    max-height:42vh;
+    max-height:30vh;
     object-fit:contain;
     display:block;
     border-radius:14px;
@@ -343,13 +344,25 @@
   }
   .chart-empty span{ font-size:11.5px; color:#e0c3d0; }
 
-  /* ---- 计数器 ---- */
+  .detail-scroll{
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    padding:14px 16px calc(env(safe-area-inset-bottom) + 30px);
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+
   .counter-card{
     background:#fff;
     border-radius:26px;
     padding:22px 20px 24px;
     text-align:center;
     box-shadow:0 8px 26px rgba(255,143,177,.16);
+    flex:0 0 auto;
   }
   .counter-label{
     font-size:13px;
@@ -413,6 +426,7 @@
     border-radius:22px;
     padding:16px 16px 14px;
     box-shadow:0 5px 18px rgba(255,143,177,.12);
+    flex:0 0 auto;
   }
   .card-title{
     font-size:13.5px;
@@ -420,6 +434,15 @@
     color:#c9486f;
     letter-spacing:1px;
     margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .card-title .tip{
+    font-size:11px;
+    font-weight:500;
+    color:#d3b2c1;
+    letter-spacing:0;
   }
   #noteInput{
     width:100%;
@@ -440,13 +463,21 @@
 
   .hist-item{
     display:flex;
-    align-items:flex-start;
+    align-items:center;
     gap:10px;
-    padding:11px 2px;
+    padding:12px 10px 12px 12px;
+    margin:0 -4px;
+    border-radius:14px;
     border-bottom:1px dashed var(--line);
     font-size:14px;
+    transition:background .18s, transform .12s;
+    cursor:pointer;
   }
-  .hist-item:last-child{ border-bottom:none; padding-bottom:2px; }
+  .hist-item:last-child{ border-bottom:none; }
+  .hist-item:active{
+    background:#fff0f6;
+    transform:scale(.985);
+  }
 
   .hist-row{
     flex:0 0 auto;
@@ -465,8 +496,19 @@
     line-height:1.6;
     word-break:break-word;
     padding-top:1px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
   .hist-note i{ color:#d9bfcb; font-style:normal; }
+
+  .hist-arrow{
+    flex:0 0 auto;
+    color:#e5c4d3;
+    font-size:16px;
+    line-height:1;
+    padding-bottom:2px;
+  }
 
   .empty-small{
     text-align:center;
@@ -555,7 +597,6 @@
     transform:scale(1.04);
   }
 
-  /* ---- 图解导入区 ---- */
   .collapse-toggle{
     width:100%;
     margin-top:14px;
@@ -726,6 +767,125 @@
     box-shadow:0 6px 16px rgba(255,100,136,.38);
   }
 
+  /* ============ 历史明细弹窗（可编辑） ============ */
+  .hist-detail-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .hist-detail-badge{
+    flex:0 0 auto;
+    font-size:14px;
+    font-weight:700;
+    color:#fff;
+    background:linear-gradient(135deg,#ffb3cf,#ff8fb1);
+    padding:6px 15px;
+    border-radius:14px;
+    letter-spacing:.5px;
+    box-shadow:0 4px 12px rgba(255,143,177,.35);
+  }
+  .hist-detail-time{
+    flex:1 1 auto;
+    font-size:11.5px;
+    color:#cba3b3;
+    text-align:right;
+    line-height:1.5;
+  }
+
+  .hist-field-label{
+    font-size:12px;
+    font-weight:700;
+    color:#c9486f;
+    letter-spacing:.8px;
+    margin:0 0 7px 2px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+  }
+
+  /* 可编辑的备注框 */
+  #histDetailNote{
+    width:100%;
+    min-height:88px;
+    max-height:32vh;
+    resize:none;
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    font-family:inherit;
+    font-size:14.5px;
+    line-height:1.8;
+    color:#5c4550;
+    background:#fff8fb;
+    padding:12px 14px;
+    outline:none;
+    display:block;
+    transition:border-color .2s;
+    -webkit-overflow-scrolling:touch;
+  }
+  #histDetailNote:focus{ border-color:#ffb3cf; background:#fff; }
+  #histDetailNote::placeholder{ color:#d9bfcb; }
+
+  /* 图解编辑区 */
+  .hist-chart-block{
+    margin-top:14px;
+    padding:13px 13px 12px;
+    background:#fffafc;
+    border-radius:18px;
+  }
+
+  .hist-chart-actions{
+    display:flex;
+    gap:7px;
+    margin-bottom:10px;
+  }
+  .hist-chart-btn{
+    flex:1 1 0;
+    border:none;
+    font-family:inherit;
+    padding:10px 5px;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.5px;
+    background:#fff0f6;
+    color:#e2678f;
+    transition:transform .12s, background .18s;
+  }
+  .hist-chart-btn:active{ background:#ffe0ee; transform:scale(.96); }
+
+  #histChartPreview{
+    display:none;
+    border-radius:14px;
+    overflow:hidden;
+    background:#fff6fa;
+  }
+  #histChartPreview.show{ display:block; }
+  #histChartPreview img{
+    width:100%;
+    max-height:28vh;
+    object-fit:contain;
+    display:block;
+  }
+  #histChartPreview .chart-text-inner{
+    padding:13px 15px;
+    font-size:13.5px;
+    line-height:1.8;
+    color:#5c4550;
+    white-space:pre-wrap;
+    word-break:break-word;
+    max-height:28vh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  #histChartPreview .chart-empty-inner{
+    padding:20px 12px;
+    text-align:center;
+    color:#d3b2c1;
+    font-size:12.5px;
+    line-height:1.8;
+  }
+
   /* ============ Toast ============ */
   .toast{
     position:fixed;
@@ -775,9 +935,8 @@
       <button id="saveBtn" class="save-btn">保存</button>
     </header>
 
-    <div class="detail-body">
+    <div class="detail-content">
 
-      <!-- ★ 每行图解（页面上方） -->
       <div class="chart-card">
         <div class="chart-head">
           <div class="chart-title">📖 第 <b id="chartRowNum">1</b> 行图解</div>
@@ -789,23 +948,28 @@
         <div class="chart-body" id="chartBody"></div>
       </div>
 
-      <div class="counter-card">
-        <div class="counter-label">当 前 行 数</div>
-        <div class="counter">
-          <button id="minusBtn" aria-label="减少一行">−</button>
-          <div class="row-num" id="rowNumWrap"><span id="rowNum">1</span><small>行</small></div>
-          <button id="plusBtn" aria-label="增加一行">+</button>
+      <div class="detail-scroll">
+        <div class="counter-card">
+          <div class="counter-label">当 前 行 数</div>
+          <div class="counter">
+            <button id="minusBtn" aria-label="减少一行">−</button>
+            <div class="row-num" id="rowNumWrap"><span id="rowNum">1</span><small>行</small></div>
+            <button id="plusBtn" aria-label="增加一行">+</button>
+          </div>
         </div>
-      </div>
 
-      <div class="note-card">
-        <div class="card-title">📝 备注</div>
-        <textarea id="noteInput" placeholder="记录这一行的针法、配色、小心得…"></textarea>
-      </div>
+        <div class="note-card">
+          <div class="card-title">📝 备注</div>
+          <textarea id="noteInput" placeholder="记录这一行的针法、配色、小心得…"></textarea>
+        </div>
 
-      <div class="history-card">
-        <div class="card-title">🕒 行数记录</div>
-        <div id="historyList"></div>
+        <div class="history-card">
+          <div class="card-title">
+            <span>🕒 行数记录</span>
+            <span class="tip">点击可编辑</span>
+          </div>
+          <div id="historyList"></div>
+        </div>
       </div>
 
     </div>
@@ -823,7 +987,6 @@
     <input id="modalInput" type="text" maxlength="20" placeholder="给项目起个名字吧～">
     <div class="icon-grid" id="iconGrid"></div>
 
-    <!-- 图解导入（仅新建时显示） -->
     <button type="button" class="collapse-toggle" id="chartToggle">
       <span id="chartToggleText">🧵 导入钩织图解（可选）</span>
       <span class="arrow">▼</span>
@@ -859,7 +1022,7 @@
   </div>
 </div>
 
-<!-- ================= 文字图解弹窗 ================= -->
+<!-- ================= 文字图解弹窗（当前行） ================= -->
 <div class="modal" id="textChartModal">
   <div class="modal-box">
     <h3 id="textChartTitle">文字图解</h3>
@@ -873,13 +1036,57 @@
   </div>
 </div>
 
+<!-- ================= 历史明细弹窗（可编辑） ================= -->
+<div class="modal" id="histDetailModal">
+  <div class="modal-box">
+    <h3>编辑记录</h3>
+    <div class="hist-detail-head">
+      <span class="hist-detail-badge" id="histDetailBadge">第 1 行</span>
+      <span class="hist-detail-time" id="histDetailTime"></span>
+    </div>
+
+    <div class="hist-field-label">📝 备注</div>
+    <textarea id="histDetailNote" placeholder="记录这一行的针法、配色、小心得…"></textarea>
+
+    <div class="hist-chart-block">
+      <div class="hist-field-label">📖 图解</div>
+      <div class="hist-chart-actions">
+        <button class="hist-chart-btn" id="histChartImgBtn" type="button">📷 图片</button>
+        <button class="hist-chart-btn" id="histChartTextBtn" type="button">✏️ 文字</button>
+        <button class="hist-chart-btn" id="histChartClearBtn" type="button">🗑 清除</button>
+      </div>
+      <div id="histChartPreview"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-ghost" id="histDetailCancel">取消</button>
+      <button class="btn-primary" id="histDetailSave">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 历史图解：图片选择器 -->
+<input type="file" id="histChartFileInput" accept="image/*" hidden>
+
+<!-- 历史图解：文字编辑弹窗 -->
+<div class="modal" id="histTextChartModal">
+  <div class="modal-box">
+    <h3 id="histTextChartTitle">文字图解</h3>
+    <textarea id="histTextChartInput" class="modal-textarea"
+      placeholder="输入这一行的图解文字说明…"></textarea>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="histTextChartCancel">取消</button>
+      <button class="btn-primary" id="histTextChartOk">确定</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 (function(){
   'use strict';
 
-  /* ================== 常量 & 状态 ================== */
   const STORAGE_KEY = 'crochet_records_v1';
   const ICONS = ['🧶','🌸','🐻','🍓','🐰','🌈','🎀','🍑','🐱','☁️','🌷','🧸','🦄','🍰','💐','🐳','🍒','⭐'];
   const ACTION_W = 140;
@@ -889,21 +1096,22 @@
   let currentId = null;
   let openCardEl = null;
 
-  let modalMode = 'create';     // create | rename
+  let modalMode = 'create';
   let editingId = null;
   let selectedIcon = ICONS[0];
   let pendingDeleteId = null;
 
-  /* 新建弹窗中暂存的图解 */
-  let pendingImages = [];       // dataURL 数组
-  let pendingTextLines = [];    // 字符串数组
+  let pendingImages = [];
+  let pendingTextLines = [];
 
-  /* 文字图解弹窗 */
   let textChartRow = null;
+
+  /* 正在编辑的历史记录 */
+  let editingHistIndex = -1;
+  let editingHistChart = null;   // 编辑中的图解（克隆副本）
 
   let quotaWarned = false;
 
-  /* ================== 工具函数 ================== */
   const $ = id => document.getElementById(id);
 
   const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -921,7 +1129,21 @@
     toastTimer = setTimeout(() => t.classList.remove('show'), 1700);
   }
 
-  /* ================== 图片压缩 ================== */
+  function fmtTime(ts){
+    if(!ts) return '';
+    const d = new Date(ts);
+    const p = n => (n < 10 ? '0' + n : '' + n);
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) +
+           ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+
+  function cloneChart(c){
+    if(!c) return null;
+    if(c.type === 'image') return { type:'image', src:c.src };
+    if(c.type === 'text')  return { type:'text',  text:c.text };
+    return null;
+  }
+
   function compressImage(file, maxW, quality){
     return new Promise(function(resolve, reject){
       if(!file || !/^image\//.test(file.type)){
@@ -957,7 +1179,6 @@
     });
   }
 
-  /* ================== 数据持久化 ================== */
   function loadData(){
     try{
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -972,6 +1193,10 @@
       p.row = Math.max(1, parseInt(p.row, 10) || 1);
       p.note = p.note || '';
       p.icon = p.icon || '🧶';
+
+      p.history.forEach(function(h){
+        if(typeof h.chart === 'undefined') h.chart = null;
+      });
     });
   }
 
@@ -1161,7 +1386,6 @@
     });
   }
 
-  /* ---- 图解导入区渲染 ---- */
   function renderChartPreview(){
     const box = $('chartPreview');
     let html = '';
@@ -1185,7 +1409,6 @@
       box.classList.remove('show');
     }
 
-    // 更新折叠按钮文案
     const n = pendingImages.length || pendingTextLines.length;
     $('chartToggleText').textContent = n
       ? '🧵 已导入 ' + n + ' 行图解'
@@ -1253,14 +1476,12 @@
     $('chartTextInput').blur();
   }
 
-  /* ---- 折叠切换 ---- */
   $('chartToggle').addEventListener('click', function(){
     const area = $('chartImportArea');
     const open = area.classList.toggle('show');
     this.classList.toggle('open', open);
   });
 
-  /* ---- 图片选择 ---- */
   $('pickImagesBtn').addEventListener('click', function(){
     $('chartFileInput').click();
   });
@@ -1283,7 +1504,6 @@
         toast('图片处理失败，请换一张试试');
         return;
       }
-      // 图片与文字互斥
       pendingTextLines = [];
       $('chartTextInput').value = '';
       $('chartTextInput').classList.remove('show');
@@ -1297,7 +1517,6 @@
     });
   });
 
-  /* ---- 文字图解（新建） ---- */
   $('pickTextBtn').addEventListener('click', function(){
     const ta = $('chartTextInput');
     ta.classList.add('show');
@@ -1320,7 +1539,6 @@
     renderChartPreview();
   });
 
-  /* ---- 弹窗按钮 ---- */
   $('modalCancel').addEventListener('click', closeModal);
   $('modal').addEventListener('click', function(e){
     if(e.target === $('modal')) closeModal();
@@ -1330,7 +1548,6 @@
     const name = $('modalInput').value.trim();
 
     if(modalMode === 'create'){
-      // 组装图解
       let charts = [];
       if(pendingImages.length){
         charts = pendingImages.map(function(src){
@@ -1425,7 +1642,11 @@
 
     $('listPage').classList.remove('active');
     $('detailPage').classList.add('active');
-    document.querySelector('.detail-body').scrollTop = 0;
+
+    const scroller = document.querySelector('.detail-scroll');
+    if(scroller) scroller.scrollTop = 0;
+    const chartBody = $('chartBody');
+    if(chartBody) chartBody.scrollTop = 0;
   }
 
   function goBackToList(){
@@ -1443,7 +1664,6 @@
     if(showToast) toast('已保存 ✨');
   }
 
-  /* ---- 图解渲染 ---- */
   function renderChart(){
     const p = getProject(currentId);
     if(!p) return;
@@ -1460,15 +1680,15 @@
 
     if(!item){
       body.innerHTML = emptyHtml;
-      return;
-    }
-    if(item.type === 'image' && item.src){
+    }else if(item.type === 'image' && item.src){
       body.innerHTML = '<img src="' + item.src + '" alt="第' + row + '行图解">';
     }else if(item.type === 'text' && item.text){
       body.innerHTML = '<div class="chart-text">' + esc(item.text) + '</div>';
     }else{
       body.innerHTML = emptyHtml;
     }
+
+    body.scrollTop = 0;
   }
 
   function renderHistory(){
@@ -1478,14 +1698,160 @@
       box.innerHTML = '<div class="empty-small">还没有记录，点一下 ＋ / − 就开始啦 🌷</div>';
       return;
     }
-    box.innerHTML = p.history.map(function(h){
-      const noteHtml = h.note ? esc(h.note) : '<i>（无备注）</i>';
-      return '<div class="hist-item">' +
-               '<span class="hist-row">第 ' + h.row + ' 行</span>' +
-               '<span class="hist-note">' + noteHtml + '</span>' +
-             '</div>';
-    }).join('');
+
+    box.innerHTML = '';
+    p.history.forEach(function(h, i){
+      const item = document.createElement('div');
+      item.className = 'hist-item';
+      item.setAttribute('role', 'button');
+      item.setAttribute('tabindex', '0');
+
+      const noteShort = h.note
+        ? (h.note.length > 22 ? h.note.slice(0, 22) + '…' : h.note)
+        : '<i>（无备注）</i>';
+
+      item.innerHTML =
+        '<span class="hist-row">第 ' + h.row + ' 行</span>' +
+        '<span class="hist-note">' + (h.note ? esc(noteShort) : noteShort) + '</span>' +
+        '<span class="hist-arrow">›</span>';
+
+      item.addEventListener('click', function(){
+        openHistEdit(i);
+      });
+
+      box.appendChild(item);
+    });
   }
+
+  /* ============ 历史明细：编辑模式 ============ */
+  function renderHistChartPreview(){
+    const box = $('histChartPreview');
+    const c = editingHistChart;
+
+    if(!c){
+      box.innerHTML = '<div class="chart-empty-inner">暂无图解 🌱</div>';
+      box.classList.add('show');
+      return;
+    }
+    if(c.type === 'image' && c.src){
+      box.innerHTML = '<img src="' + c.src + '" alt="图解">';
+      box.classList.add('show');
+    }else if(c.type === 'text' && c.text){
+      box.innerHTML = '<div class="chart-text-inner">' + esc(c.text) + '</div>';
+      box.classList.add('show');
+    }else{
+      box.innerHTML = '<div class="chart-empty-inner">暂无图解 🌱</div>';
+      box.classList.add('show');
+    }
+  }
+
+  function openHistEdit(index){
+    const p = getProject(currentId);
+    if(!p || !p.history[index]) return;
+    const h = p.history[index];
+
+    editingHistIndex = index;
+    editingHistChart = cloneChart(h.chart);
+
+    $('histDetailBadge').textContent = '第 ' + h.row + ' 行';
+    $('histDetailTime').textContent = h.t ? fmtTime(h.t) : '';
+    $('histDetailNote').value = h.note || '';
+
+    renderHistChartPreview();
+
+    $('histDetailModal').classList.add('show');
+  }
+
+  function closeHistDetail(){
+    $('histDetailModal').classList.remove('show');
+    editingHistIndex = -1;
+    editingHistChart = null;
+  }
+
+  $('histDetailCancel').addEventListener('click', closeHistDetail);
+
+  $('histDetailModal').addEventListener('click', function(e){
+    if(e.target === $('histDetailModal')) closeHistDetail();
+  });
+
+  /* 保存历史编辑 */
+  $('histDetailSave').addEventListener('click', function(){
+    const p = getProject(currentId);
+    if(!p || editingHistIndex < 0 || !p.history[editingHistIndex]){
+      closeHistDetail();
+      return;
+    }
+
+    const h = p.history[editingHistIndex];
+    h.note = $('histDetailNote').value.trim();
+    h.chart = cloneChart(editingHistChart);
+
+    saveData();
+    renderHistory();
+    closeHistDetail();
+    toast('已保存修改 ✨');
+  });
+
+  /* 历史图解：选图片 */
+  $('histChartImgBtn').addEventListener('click', function(){
+    $('histChartFileInput').click();
+  });
+
+  $('histChartFileInput').addEventListener('change', function(e){
+    const input = this;
+    const file = (e.target.files || [])[0];
+    input.value = '';
+    if(!file) return;
+
+    toast('正在处理图片…');
+    compressImage(file, 900, 0.75).then(function(src){
+      editingHistChart = { type:'image', src:src };
+      renderHistChartPreview();
+      toast('已更换图解图片 📷');
+    }).catch(function(){
+      toast('图片处理失败，请换一张试试');
+    });
+  });
+
+  /* 历史图解：文字 */
+  $('histChartTextBtn').addEventListener('click', function(){
+    const cur = editingHistChart;
+    $('histTextChartInput').value = (cur && cur.type === 'text') ? cur.text : '';
+    $('histTextChartModal').classList.add('show');
+    setTimeout(function(){ $('histTextChartInput').focus(); }, 120);
+  });
+
+  $('histTextChartCancel').addEventListener('click', function(){
+    $('histTextChartModal').classList.remove('show');
+  });
+
+  $('histTextChartModal').addEventListener('click', function(e){
+    if(e.target === $('histTextChartModal')){
+      $('histTextChartModal').classList.remove('show');
+    }
+  });
+
+  $('histTextChartOk').addEventListener('click', function(){
+    const val = $('histTextChartInput').value.trim();
+    editingHistChart = val ? { type:'text', text:val } : null;
+    renderHistChartPreview();
+    $('histTextChartModal').classList.remove('show');
+    toast(val ? '已更新文字图解 ✏️' : '已清除图解');
+  });
+
+  $('histTextChartInput').addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && (e.metaKey || e.ctrlKey)){
+      e.preventDefault();
+      $('histTextChartOk').click();
+    }
+  });
+
+  /* 历史图解：清除 */
+  $('histChartClearBtn').addEventListener('click', function(){
+    editingHistChart = null;
+    renderHistChartPreview();
+    toast('已清除图解');
+  });
 
   function bumpNumber(){
     const el = $('rowNumWrap');
@@ -1494,6 +1860,7 @@
     el.classList.add('bump');
   }
 
+  /* 切换行数：保存当前状态到历史，清空备注 */
   function changeRow(delta){
     const p = getProject(currentId);
     if(!p) return;
@@ -1504,11 +1871,12 @@
     }
 
     const noteVal = $('noteInput').value;
+    const currentChart = (p.charts || [])[p.row - 1] || null;
 
-    /* 记录「变化之前」的行数 + 对应备注 */
     p.history.unshift({
       row: p.row,
       note: noteVal.trim(),
+      chart: cloneChart(currentChart),
       t: Date.now()
     });
 
@@ -1518,8 +1886,11 @@
     $('rowNum').textContent = p.row;
     bumpNumber();
 
+    $('noteInput').value = '';
+    p.note = '';
+
     renderHistory();
-    renderChart();   /* ★ 切换行后刷新上方图解 */
+    renderChart();
     saveData();
   }
 
@@ -1608,13 +1979,11 @@
     }
   });
 
-  /* ---- 计数器 / 顶部按钮 ---- */
   $('plusBtn').addEventListener('click', function(){ changeRow(1); });
   $('minusBtn').addEventListener('click', function(){ changeRow(-1); });
   $('backBtn').addEventListener('click', goBackToList);
   $('saveBtn').addEventListener('click', function(){ saveCurrent(true); });
 
-  /* 备注实时写入内存 + 防抖保存 */
   let noteTimer = null;
   $('noteInput').addEventListener('input', function(){
     const p = getProject(currentId);
@@ -1623,23 +1992,27 @@
     noteTimer = setTimeout(saveData, 500);
   });
 
-  /* 新建项目按钮 */
   $('newProjectBtn').addEventListener('click', openCreateModal);
 
-  /* 安卓物理返回键 / 浏览器返回 */
   window.addEventListener('popstate', function(){
+    if($('histTextChartModal').classList.contains('show')){
+      $('histTextChartModal').classList.remove('show');
+      return;
+    }
+    if($('histDetailModal').classList.contains('show')){
+      closeHistDetail();
+      return;
+    }
     if($('detailPage').classList.contains('active')){
       goBackToList();
     }
   });
   history.replaceState({ page: 'list' }, '');
 
-  /* 切到后台时保存 */
   document.addEventListener('visibilitychange', function(){
     if(document.hidden && currentId) saveCurrent(false);
   });
 
-  /* ================== 初始化 ================== */
   loadData();
   buildIconGrid();
   renderList();
