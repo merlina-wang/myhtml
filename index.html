@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffe3ee">
+<title>🧶 我的钩织记录</title>
+<style>
+  :root{
+    --pink:#ff8fb1;
+    --pink-deep:#f0678f;
+    --pink-soft:#ffe3ee;
+    --bg:#fff6fa;
+    --card:#ffffff;
+    --text:#5c4550;
+    --muted:#b294a2;
+    --line:#ffe7f0;
+    --radius:20px;
+    --action-w:140px;
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  html,body{ height:100%; }
+
+  body{
+    margin:0;
+    overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    color:var(--text);
+    background:#f4e7ee;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ============ 容器 ============ */
+  #app{
+    position:relative;
+    width:100%;
+    max-width:480px;
+    height:100vh;
+    height:100dvh;
+    margin:0 auto;
+    background:var(--bg);
+    overflow:hidden;
+  }
+
+  .page{
+    position:absolute;
+    inset:0;
+    display:none;
+    flex-direction:column;
+    background:var(--bg);
+  }
+  .page.active{ display:flex; animation:pageIn .26s ease both; }
+
+  @keyframes pageIn{
+    from{ opacity:0; transform:translateX(14px); }
+    to{ opacity:1; transform:translateX(0); }
+  }
+
+  /* ============ 列表页 ============ */
+  .app-header{
+    padding: calc(env(safe-area-inset-top) + 26px) 22px 24px;
+    background:linear-gradient(150deg,#ffd6e7 0%,#ffeaf3 58%,#fff6fa 100%);
+    border-radius:0 0 28px 28px;
+    flex:0 0 auto;
+  }
+  .app-header h1{
+    margin:0;
+    font-size:24px;
+    color:#c9486f;
+    letter-spacing:1.5px;
+    font-weight:700;
+  }
+  .app-header p{
+    margin:7px 0 0;
+    font-size:13px;
+    color:#d98cab;
+    letter-spacing:.5px;
+  }
+
+  .list-body{
+    flex:1 1 auto;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    padding:20px 16px 8px;
+  }
+
+  /* ---- 滑动卡片 ---- */
+  .swipe-wrap{
+    position:relative;
+    margin-bottom:14px;
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:#fff;
+    box-shadow:0 5px 18px rgba(255,150,185,.14);
+  }
+
+  .swipe-actions{
+    position:absolute;
+    top:0; right:0; bottom:0;
+    display:flex;
+    z-index:0;
+  }
+  .act{
+    width:70px;
+    border:none;
+    color:#fff;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:1px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:inherit;
+  }
+  .act.rename{ background:#ffb8ce; }
+  .act.delete{ background:#ff7096; }
+  .act:active{ filter:brightness(.94); }
+
+  .card{
+    position:relative;
+    z-index:1;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:15px 16px;
+    background:#fff;
+    will-change:transform;
+    touch-action:pan-y;
+  }
+
+  .p-icon{
+    flex:0 0 auto;
+    width:48px; height:48px;
+    border-radius:16px;
+    background:linear-gradient(135deg,#ffe9f3,#ffd2e4);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+  }
+
+  .p-info{ flex:1 1 auto; min-width:0; }
+
+  .p-name{
+    font-size:16px;
+    font-weight:600;
+    color:#5c4550;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .p-rows{
+    margin-top:5px;
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  .p-rows b{ color:#ff7aa6; font-size:15px; font-weight:700; }
+
+  .edit-btn{
+    flex:0 0 auto;
+    border:none;
+    font-family:inherit;
+    padding:9px 16px;
+    border-radius:14px;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.5px;
+    color:#fff;
+    background:linear-gradient(135deg,#ffb3cf,#ff8fb1);
+    box-shadow:0 4px 12px rgba(255,143,177,.38);
+    transition:transform .12s;
+  }
+  .edit-btn:active{ transform:scale(.93); }
+
+  .empty{
+    text-align:center;
+    padding:70px 20px;
+    color:#c8a5b5;
+  }
+  .empty-icon{ font-size:52px; margin-bottom:14px; }
+  .empty p{ margin:0; font-size:14px; line-height:1.9; }
+
+  /* ---- 底部按钮 ---- */
+  .list-footer{
+    flex:0 0 auto;
+    padding:10px 18px calc(env(safe-area-inset-bottom) + 16px);
+    background:linear-gradient(to top,#fff6fa 62%,rgba(255,246,250,0));
+  }
+  #newProjectBtn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:20px;
+    font-family:inherit;
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    color:#fff;
+    background:linear-gradient(135deg,#ffa5c6,#ff7ba9);
+    box-shadow:0 8px 22px rgba(255,123,169,.4);
+    transition:transform .12s;
+  }
+  #newProjectBtn:active{ transform:scale(.975); }
+
+  /* ============ 详情页 ============ */
+  .topbar{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding: calc(env(safe-area-inset-top) + 12px) 14px 14px;
+    background:linear-gradient(150deg,#ffd6e7,#ffeaf3);
+    border-radius:0 0 22px 22px;
+  }
+  .topbar h2{
+    flex:1 1 auto;
+    margin:0;
+    font-size:17px;
+    font-weight:700;
+    color:#c9486f;
+    text-align:center;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .icon-btn{
+    flex:0 0 auto;
+    width:38px; height:38px;
+    border:none;
+    border-radius:50%;
+    background:rgba(255,255,255,.78);
+    color:#e2678f;
+    font-size:24px;
+    line-height:1;
+    padding-bottom:3px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:inherit;
+  }
+  .icon-btn:active{ background:#fff; }
+  .save-btn{
+    flex:0 0 auto;
+    border:none;
+    font-family:inherit;
+    padding:9px 17px;
+    border-radius:14px;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.5px;
+    color:#fff;
+    background:linear-gradient(135deg,#ffa5c6,#ff7ba9);
+    box-shadow:0 4px 12px rgba(255,123,169,.35);
+    transition:transform .12s;
+  }
+  .save-btn:active{ transform:scale(.94); }
+
+  .detail-body{
+    flex:1 1 auto;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    padding:18px 16px calc(env(safe-area-inset-bottom) + 30px);
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  .counter-card{
+    background:#fff;
+    border-radius:26px;
+    padding:22px 20px 24px;
+    text-align:center;
+    box-shadow:0 8px 26px rgba(255,143,177,.16);
+  }
+  .counter-label{
+    font-size:13px;
+    letter-spacing:2px;
+    color:#cba3b3;
+  }
+  .counter{
+    margin-top:14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .counter button{
+    width:66px; height:66px;
+    flex:0 0 auto;
+    border:none;
+    border-radius:50%;
+    font-family:inherit;
+    font-size:32px;
+    font-weight:300;
+    line-height:1;
+    color:#fff;
+    background:linear-gradient(135deg,#ffa5c3,#ff85ae);
+    box-shadow:0 7px 16px rgba(255,133,174,.42);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform .12s;
+  }
+  .counter button:active{ transform:scale(.9); }
+
+  .row-num{
+    flex:1 1 auto;
+    font-size:60px;
+    font-weight:800;
+    color:#ff6b9d;
+    line-height:1;
+    display:flex;
+    align-items:baseline;
+    justify-content:center;
+    letter-spacing:-1px;
+  }
+  .row-num small{
+    font-size:16px;
+    font-weight:600;
+    color:#d3a8b8;
+    margin-left:5px;
+    letter-spacing:0;
+  }
+  .row-num.bump{ animation:bump .26s ease; }
+  @keyframes bump{
+    0%{ transform:scale(1); }
+    42%{ transform:scale(1.14); }
+    100%{ transform:scale(1); }
+  }
+
+  .note-card,
+  .history-card{
+    background:#fff;
+    border-radius:22px;
+    padding:16px 16px 14px;
+    box-shadow:0 5px 18px rgba(255,143,177,.12);
+  }
+  .card-title{
+    font-size:13.5px;
+    font-weight:700;
+    color:#c9486f;
+    letter-spacing:1px;
+    margin-bottom:10px;
+  }
+  #noteInput{
+    width:100%;
+    min-height:96px;
+    resize:none;
+    border:none;
+    outline:none;
+    font-family:inherit;
+    font-size:14.5px;
+    line-height:1.75;
+    color:#5c4550;
+    background:#fff6fa;
+    border-radius:16px;
+    padding:13px 14px;
+    display:block;
+  }
+  #noteInput::placeholder{ color:#d9bfcb; }
+
+  .hist-item{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:11px 2px;
+    border-bottom:1px dashed var(--line);
+    font-size:14px;
+  }
+  .hist-item:last-child{ border-bottom:none; padding-bottom:2px; }
+
+  .hist-row{
+    flex:0 0 auto;
+    font-size:12.5px;
+    font-weight:700;
+    color:#ff7fa8;
+    background:#ffe9f2;
+    padding:3px 10px;
+    border-radius:11px;
+    letter-spacing:.5px;
+  }
+  .hist-note{
+    flex:1 1 auto;
+    min-width:0;
+    color:#8a7280;
+    line-height:1.6;
+    word-break:break-word;
+    padding-top:1px;
+  }
+  .hist-note i{ color:#d9bfcb; font-style:normal; }
+
+  .empty-small{
+    text-align:center;
+    color:#d0b3c1;
+    font-size:13px;
+    padding:18px 0 10px;
+  }
+
+  /* ============ 弹窗 ============ */
+  .modal{
+    position:fixed;
+    inset:0;
+    z-index:300;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:26px;
+    background:rgba(120,70,95,.32);
+    backdrop-filter:blur(3px);
+    -webkit-backdrop-filter:blur(3px);
+  }
+  .modal.show{ display:flex; animation:fadeIn .18s ease both; }
+  @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+
+  .modal-box{
+    width:100%;
+    max-width:340px;
+    background:#fff;
+    border-radius:26px;
+    padding:22px 20px 18px;
+    box-shadow:0 20px 50px rgba(150,80,110,.24);
+    animation:popIn .24s cubic-bezier(.2,1.3,.5,1) both;
+  }
+  @keyframes popIn{
+    from{ opacity:0; transform:scale(.9) translateY(10px); }
+    to{ opacity:1; transform:scale(1) translateY(0); }
+  }
+
+  .modal-box h3{
+    margin:0 0 16px;
+    font-size:17px;
+    color:#c9486f;
+    text-align:center;
+    letter-spacing:1px;
+  }
+  #modalInput{
+    width:100%;
+    padding:13px 15px;
+    border:1.5px solid var(--line);
+    border-radius:15px;
+    font-family:inherit;
+    font-size:15px;
+    color:var(--text);
+    outline:none;
+    background:#fff8fb;
+    transition:border-color .2s;
+  }
+  #modalInput:focus{ border-color:#ffb3cf; }
+  #modalInput::placeholder{ color:#d9bfcb; }
+
+  .icon-grid{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:8px;
+    margin-top:14px;
+  }
+  .icon-opt{
+    aspect-ratio:1/1;
+    border:none;
+    border-radius:13px;
+    background:#fff5f9;
+    font-size:19px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    transition:transform .12s, background .18s;
+    font-family:inherit;
+  }
+  .icon-opt.sel{
+    background:linear-gradient(135deg,#ffd6e7,#ffb8d3);
+    box-shadow:0 0 0 2px #ff9dc0 inset;
+    transform:scale(1.04);
+  }
+
+  .confirm-text{
+    margin:0 0 20px;
+    font-size:14.5px;
+    color:#8a7280;
+    text-align:center;
+    line-height:1.7;
+  }
+
+  .modal-actions{
+    display:flex;
+    gap:11px;
+    margin-top:20px;
+  }
+  .modal-actions button{
+    flex:1 1 0;
+    padding:13px;
+    border:none;
+    border-radius:16px;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:1px;
+    transition:transform .12s;
+  }
+  .modal-actions button:active{ transform:scale(.96); }
+  .btn-ghost{ background:#fff0f6; color:#c48da4; }
+  .btn-primary{
+    background:linear-gradient(135deg,#ffa5c6,#ff7ba9);
+    color:#fff;
+    box-shadow:0 6px 16px rgba(255,123,169,.38);
+  }
+  .btn-danger{
+    background:linear-gradient(135deg,#ff8fa8,#ff6488);
+    color:#fff;
+    box-shadow:0 6px 16px rgba(255,100,136,.38);
+  }
+
+  /* ============ Toast ============ */
+  .toast{
+    position:fixed;
+    left:50%;
+    bottom:88px;
+    z-index:500;
+    padding:11px 22px;
+    border-radius:22px;
+    background:rgba(105,62,82,.9);
+    color:#fff;
+    font-size:13.5px;
+    letter-spacing:.5px;
+    white-space:nowrap;
+    opacity:0;
+    transform:translateX(-50%) translateY(12px);
+    transition:opacity .26s, transform .26s;
+    pointer-events:none;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ================= 项目列表页 ================= -->
+  <section id="listPage" class="page active">
+    <header class="app-header">
+      <h1>我的钩织</h1>
+      <p>记录每一行的温柔时光 🌸</p>
+    </header>
+
+    <div class="list-body">
+      <div id="projectList"></div>
+    </div>
+
+    <div class="list-footer">
+      <button id="newProjectBtn">＋ 新建钩织项目</button>
+    </div>
+  </section>
+
+  <!-- ================= 项目内容页 ================= -->
+  <section id="detailPage" class="page">
+    <header class="topbar">
+      <button id="backBtn" class="icon-btn" aria-label="返回">‹</button>
+      <h2 id="detailTitle">项目</h2>
+      <button id="saveBtn" class="save-btn">保存</button>
+    </header>
+
+    <div class="detail-body">
+
+      <div class="counter-card">
+        <div class="counter-label">当 前 行 数</div>
+        <div class="counter">
+          <button id="minusBtn" aria-label="减少一行">−</button>
+          <div class="row-num" id="rowNumWrap"><span id="rowNum">1</span><small>行</small></div>
+          <button id="plusBtn" aria-label="增加一行">+</button>
+        </div>
+      </div>
+
+      <div class="note-card">
+        <div class="card-title">📝 备注</div>
+        <textarea id="noteInput" placeholder="记录这一行的针法、配色、小心得…"></textarea>
+      </div>
+
+      <div class="history-card">
+        <div class="card-title">🕒 行数记录</div>
+        <div id="historyList"></div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<!-- ================= 新建 / 重命名 弹窗 ================= -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3 id="modalTitle">新建钩织项目</h3>
+    <input id="modalInput" type="text" maxlength="20" placeholder="给项目起个名字吧～">
+    <div class="icon-grid" id="iconGrid"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="modalCancel">取消</button>
+      <button class="btn-primary" id="modalOk">创建</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 删除确认弹窗 ================= -->
+<div class="modal" id="confirmModal">
+  <div class="modal-box">
+    <h3>删除项目</h3>
+    <p class="confirm-text" id="confirmText">确定要删除这个项目吗？<br>删除后无法恢复哦～</p>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="confirmCancel">取消</button>
+      <button class="btn-danger" id="confirmOk">删除</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ================== 常量 & 状态 ================== */
+  const STORAGE_KEY = 'crochet_records_v1';
+  const ICONS = ['🧶','🌸','🐻','🍓','🐰','🌈','🎀','🍑','🐱','☁️','🌷','🧸','🦄','🍰','💐','🐳','🍒','⭐'];
+  const ACTION_W = 140;
+
+  let projects = [];
+  let currentId = null;
+  let openCardEl = null;
+
+  let modalMode = 'create';     // create | rename
+  let editingId = null;
+  let selectedIcon = ICONS[0];
+  let pendingDeleteId = null;
+
+  /* ================== 工具函数 ================== */
+  const $ = id => document.getElementById(id);
+
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+
+  let toastTimer = null;
+  function toast(msg){
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
+  }
+
+  /* ================== 数据持久化 ================== */
+  function loadData(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      projects = raw ? JSON.parse(raw) : [];
+      if(!Array.isArray(projects)) projects = [];
+    }catch(e){
+      projects = [];
+    }
+    // 兼容性补齐
+    projects.forEach(p => {
+      p.history = Array.isArray(p.history) ? p.history : [];
+      p.row = Math.max(1, parseInt(p.row, 10) || 1);
+      p.note = p.note || '';
+      p.icon = p.icon || '🧶';
+    });
+  }
+
+  function saveData(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+    }catch(e){
+      toast('存储空间不足 😢');
+    }
+  }
+
+  const getProject = id => projects.find(p => p.id === id);
+
+  /* ================== 左滑逻辑 ================== */
+  function setSwipe(card, open){
+    if(!card) return;
+    card.style.transition = 'transform .26s cubic-bezier(.2,.8,.3,1)';
+    card.style.transform = open ? `translateX(${-ACTION_W}px)` : 'translateX(0)';
+    card._open = open;
+    if(open){
+      if(openCardEl && openCardEl !== card){
+        openCardEl.style.transition = 'transform .26s cubic-bezier(.2,.8,.3,1)';
+        openCardEl.style.transform = 'translateX(0)';
+        openCardEl._open = false;
+      }
+      openCardEl = card;
+    }else if(openCardEl === card){
+      openCardEl = null;
+    }
+  }
+
+  function closeAllSwipe(){
+    if(openCardEl) setSwipe(openCardEl, false);
+  }
+
+  function attachSwipe(card){
+    let startX = 0, startY = 0, baseX = 0, dx = 0, locked = null;
+
+    card.addEventListener('touchstart', function(e){
+      if(e.touches.length > 1) return;
+      if(openCardEl && openCardEl !== card) setSwipe(openCardEl, false);
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      baseX = card._open ? -ACTION_W : 0;
+      dx = baseX;
+      locked = null;
+      card.style.transition = 'none';
+    }, { passive: true });
+
+    card.addEventListener('touchmove', function(e){
+      if(e.touches.length > 1) return;
+      const x = e.touches[0].clientX;
+      const y = e.touches[0].clientY;
+      const ddx = x - startX;
+      const ddy = y - startY;
+
+      if(locked === null){
+        if(Math.abs(ddx) > 8 || Math.abs(ddy) > 8){
+          locked = Math.abs(ddx) > Math.abs(ddy) ? 'x' : 'y';
+        }else{
+          return;
+        }
+      }
+      if(locked !== 'x') return;
+
+      e.preventDefault();
+      let val = baseX + ddx;
+      if(val > 0) val = 0;
+      if(val < -ACTION_W) val = -ACTION_W;
+      dx = val;
+      card.style.transform = 'translateX(' + val + 'px)';
+    }, { passive: false });
+
+    function endSwipe(){
+      if(locked !== 'x'){ dx = baseX; }
+      setSwipe(card, dx < -ACTION_W / 2);
+    }
+    card.addEventListener('touchend', endSwipe);
+    card.addEventListener('touchcancel', endSwipe);
+  }
+
+  /* ================== 列表渲染 ================== */
+  function renderList(){
+    const list = $('projectList');
+    list.innerHTML = '';
+    openCardEl = null;
+
+    if(!projects.length){
+      list.innerHTML =
+        '<div class="empty">' +
+          '<div class="empty-icon">🧺</div>' +
+          '<p>还没有钩织项目<br>点击下方按钮开始第一个吧 🌸</p>' +
+        '</div>';
+      return;
+    }
+
+    projects.forEach(function(p){
+      const wrap = document.createElement('div');
+      wrap.className = 'swipe-wrap';
+
+      /* --- 右侧操作按钮 --- */
+      const actions = document.createElement('div');
+      actions.className = 'swipe-actions';
+
+      const renameBtn = document.createElement('button');
+      renameBtn.className = 'act rename';
+      renameBtn.type = 'button';
+      renameBtn.textContent = '重命名';
+      renameBtn.addEventListener('click', function(){
+        setSwipe(card, false);
+        openRenameModal(p.id);
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'act delete';
+      delBtn.type = 'button';
+      delBtn.textContent = '删除';
+      delBtn.addEventListener('click', function(){
+        setSwipe(card, false);
+        askDelete(p.id);
+      });
+
+      actions.appendChild(renameBtn);
+      actions.appendChild(delBtn);
+
+      /* --- 卡片主体 --- */
+      const card = document.createElement('div');
+      card.className = 'card';
+      card._open = false;
+      card.innerHTML =
+        '<div class="p-icon">' + esc(p.icon) + '</div>' +
+        '<div class="p-info">' +
+          '<div class="p-name">' + esc(p.name) + '</div>' +
+          '<div class="p-rows">当前 <b>' + p.row + '</b> 行</div>' +
+        '</div>' +
+        '<button class="edit-btn" type="button">编辑</button>';
+
+      card.addEventListener('click', function(e){
+        if(card._open){
+          setSwipe(card, false);
+          return;
+        }
+        if(e.target.closest('.edit-btn') || e.target.closest('.p-info') ||
+           e.target.closest('.p-icon') || e.target === card){
+          openProject(p.id);
+        }
+      });
+
+      wrap.appendChild(actions);
+      wrap.appendChild(card);
+      list.appendChild(wrap);
+
+      attachSwipe(card);
+    });
+  }
+
+  /* 点击空白处收起左滑 */
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('.swipe-wrap')){
+      closeAllSwipe();
+    }
+  }, false);
+
+  /* ================== 新建 / 重命名 弹窗 ================== */
+  function buildIconGrid(){
+    const grid = $('iconGrid');
+    grid.innerHTML = ICONS.map(function(ic, i){
+      return '<button type="button" class="icon-opt' + (i === 0 ? ' sel' : '') +
+             '" data-icon="' + ic + '">' + ic + '</button>';
+    }).join('');
+
+    grid.addEventListener('click', function(e){
+      const btn = e.target.closest('.icon-opt');
+      if(!btn) return;
+      grid.querySelectorAll('.icon-opt').forEach(function(b){ b.classList.remove('sel'); });
+      btn.classList.add('sel');
+      selectedIcon = btn.dataset.icon;
+    });
+  }
+
+  function openCreateModal(){
+    modalMode = 'create';
+    editingId = null;
+    selectedIcon = ICONS[0];
+    $('modalTitle').textContent = '新建钩织项目';
+    $('modalOk').textContent = '创建';
+    const input = $('modalInput');
+    input.value = '';
+    input.placeholder = '给项目起个名字吧～';
+    $('iconGrid').style.display = 'grid';
+    const grid = $('iconGrid');
+    grid.querySelectorAll('.icon-opt').forEach(function(b, i){
+      b.classList.toggle('sel', i === 0);
+    });
+    $('modal').classList.add('show');
+    setTimeout(function(){ input.focus(); }, 120);
+  }
+
+  function openRenameModal(id){
+    const p = getProject(id);
+    if(!p) return;
+    modalMode = 'rename';
+    editingId = id;
+    $('modalTitle').textContent = '重命名项目';
+    $('modalOk').textContent = '保存';
+    const input = $('modalInput');
+    input.value = p.name;
+    input.placeholder = '输入新的名称';
+    $('iconGrid').style.display = 'none';
+    $('modal').classList.add('show');
+    setTimeout(function(){ input.focus(); input.select(); }, 120);
+  }
+
+  function closeModal(){
+    $('modal').classList.remove('show');
+    $('modalInput').blur();
+  }
+
+  $('modalCancel').addEventListener('click', closeModal);
+  $('modal').addEventListener('click', function(e){
+    if(e.target === $('modal')) closeModal();
+  });
+
+  $('modalOk').addEventListener('click', function(){
+    const name = $('modalInput').value.trim();
+
+    if(modalMode === 'create'){
+      projects.unshift({
+        id: uid(),
+        icon: selectedIcon,
+        name: name || '未命名项目',
+        row: 1,
+        note: '',
+        history: []
+      });
+      saveData();
+      renderList();
+      closeModal();
+      toast('项目创建成功 🎉');
+    }else{
+      const p = getProject(editingId);
+      if(p){
+        p.name = name || p.name;
+        saveData();
+        renderList();
+        if(currentId === p.id){
+          $('detailTitle').textContent = p.name;
+        }
+        closeModal();
+        toast('已重命名 ✨');
+      }else{
+        closeModal();
+      }
+    }
+  });
+
+  $('modalInput').addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ e.preventDefault(); $('modalOk').click(); }
+  });
+
+  /* ================== 删除确认 ================== */
+  function askDelete(id){
+    const p = getProject(id);
+    if(!p) return;
+    pendingDeleteId = id;
+    $('confirmText').innerHTML =
+      '确定要删除「<b>' + esc(p.name) + '</b>」吗？<br>删除后无法恢复哦～';
+    $('confirmModal').classList.add('show');
+  }
+
+  $('confirmCancel').addEventListener('click', function(){
+    $('confirmModal').classList.remove('show');
+    pendingDeleteId = null;
+  });
+
+  $('confirmModal').addEventListener('click', function(e){
+    if(e.target === $('confirmModal')){
+      $('confirmModal').classList.remove('show');
+      pendingDeleteId = null;
+    }
+  });
+
+  $('confirmOk').addEventListener('click', function(){
+    if(pendingDeleteId){
+      projects = projects.filter(function(p){ return p.id !== pendingDeleteId; });
+      saveData();
+      renderList();
+      toast('已删除');
+    }
+    pendingDeleteId = null;
+    $('confirmModal').classList.remove('show');
+  });
+
+  /* ================== 详情页 ================== */
+  function openProject(id){
+    const p = getProject(id);
+    if(!p) return;
+    currentId = id;
+
+    $('detailTitle').textContent = p.name;
+    $('rowNum').textContent = p.row;
+    $('noteInput').value = p.note || '';
+
+    renderHistory();
+
+    $('listPage').classList.remove('active');
+    $('detailPage').classList.add('active');
+    $('detailPage').scrollTop = 0;
+    document.querySelector('.detail-body').scrollTop = 0;
+  }
+
+  function goBackToList(){
+    saveCurrent(false);
+    $('detailPage').classList.remove('active');
+    $('listPage').classList.add('active');
+    renderList();
+  }
+
+  function saveCurrent(showToast){
+    const p = getProject(currentId);
+    if(!p) return;
+    p.note = $('noteInput').value;
+    saveData();
+    if(showToast) toast('已保存 ✨');
+  }
+
+  function renderHistory(){
+    const p = getProject(currentId);
+    const box = $('historyList');
+    if(!p || !p.history.length){
+      box.innerHTML = '<div class="empty-small">还没有记录，点一下 ＋ / − 就开始啦 🌷</div>';
+      return;
+    }
+    box.innerHTML = p.history.map(function(h){
+      const noteHtml = h.note
+        ? esc(h.note)
+        : '<i>（无备注）</i>';
+      return '<div class="hist-item">' +
+               '<span class="hist-row">第 ' + h.row + ' 行</span>' +
+               '<span class="hist-note">' + noteHtml + '</span>' +
+             '</div>';
+    }).join('');
+  }
+
+  function bumpNumber(){
+    const el = $('rowNumWrap');
+    el.classList.remove('bump');
+    void el.offsetWidth;
+    el.classList.add('bump');
+  }
+
+  function changeRow(delta){
+    const p = getProject(currentId);
+    if(!p) return;
+
+    if(delta < 0 && p.row <= 1){
+      toast('已经是第 1 行啦～');
+      return;
+    }
+
+    const noteVal = $('noteInput').value;
+
+    /* 记录「变化之前」的行数 + 对应备注 */
+    p.history.unshift({
+      row: p.row,
+      note: noteVal.trim(),
+      t: Date.now()
+    });
+
+    p.row = Math.max(1, p.row + delta);
+    p.note = noteVal;
+
+    $('rowNum').textContent = p.row;
+    bumpNumber();
+    renderHistory();
+    saveData();
+  }
+
+  $('plusBtn').addEventListener('click', function(){ changeRow(1); });
+  $('minusBtn').addEventListener('click', function(){ changeRow(-1); });
+  $('backBtn').addEventListener('click', goBackToList);
+  $('saveBtn').addEventListener('click', function(){ saveCurrent(true); });
+
+  /* 备注实时写入内存 + 防抖保存 */
+  let noteTimer = null;
+  $('noteInput').addEventListener('input', function(){
+    const p = getProject(currentId);
+    if(p) p.note = $('noteInput').value;
+    clearTimeout(noteTimer);
+    noteTimer = setTimeout(saveData, 500);
+  });
+
+  /* 新建项目按钮 */
+  $('newProjectBtn').addEventListener('click', openCreateModal);
+
+  /* 安卓物理返回键 / 浏览器返回 */
+  window.addEventListener('popstate', function(){
+    if($('detailPage').classList.contains('active')){
+      goBackToList();
+    }
+  });
+  history.replaceState({ page: 'list' }, '');
+
+  /* 切到后台时保存 */
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden && currentId) saveCurrent(false);
+  });
+
+  /* ================== 初始化 ================== */
+  loadData();
+  buildIconGrid();
+  renderList();
+
+})();
+</script>
+</body>
+</html>
