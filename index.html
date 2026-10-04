@@ -157,6 +157,9 @@
     margin-top:5px;
     font-size:12.5px;
     color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
   .p-rows b{ color:#ff7aa6; font-size:15px; font-weight:700; }
 
@@ -270,6 +273,77 @@
     gap:14px;
   }
 
+  /* ---- 图解卡片（新增） ---- */
+  .chart-card{
+    background:#fff;
+    border-radius:22px;
+    box-shadow:0 5px 18px rgba(255,143,177,.12);
+    overflow:hidden;
+  }
+  .chart-head{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:13px 14px 11px;
+  }
+  .chart-title{
+    flex:1 1 auto;
+    min-width:0;
+    font-size:13.5px;
+    font-weight:700;
+    color:#c9486f;
+    letter-spacing:.5px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .chart-title b{ color:#ff6b9d; font-size:15px; }
+  .chart-tools{ display:flex; gap:6px; flex:0 0 auto; }
+  .mini-btn{
+    border:none;
+    font-family:inherit;
+    font-size:11.5px;
+    font-weight:600;
+    padding:7px 11px;
+    border-radius:11px;
+    background:#fff0f6;
+    color:#e2678f;
+    letter-spacing:.5px;
+    transition:transform .12s, background .18s;
+  }
+  .mini-btn:active{ background:#ffe0ee; transform:scale(.95); }
+
+  .chart-body{ padding:0 14px 14px; }
+  .chart-body img{
+    width:100%;
+    max-height:42vh;
+    object-fit:contain;
+    display:block;
+    border-radius:14px;
+    background:#fff6fa;
+  }
+  .chart-text{
+    background:#fff6fa;
+    border-radius:14px;
+    padding:13px 15px;
+    font-size:14px;
+    line-height:1.85;
+    color:#5c4550;
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .chart-empty{
+    text-align:center;
+    padding:26px 12px;
+    color:#d3b2c1;
+    font-size:13px;
+    line-height:1.9;
+    background:#fffafc;
+    border-radius:14px;
+  }
+  .chart-empty span{ font-size:11.5px; color:#e0c3d0; }
+
+  /* ---- 计数器 ---- */
   .counter-card{
     background:#fff;
     border-radius:26px;
@@ -409,7 +483,7 @@
     display:none;
     align-items:center;
     justify-content:center;
-    padding:26px;
+    padding:22px;
     background:rgba(120,70,95,.32);
     backdrop-filter:blur(3px);
     -webkit-backdrop-filter:blur(3px);
@@ -419,7 +493,10 @@
 
   .modal-box{
     width:100%;
-    max-width:340px;
+    max-width:360px;
+    max-height:88vh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
     background:#fff;
     border-radius:26px;
     padding:22px 20px 18px;
@@ -478,6 +555,140 @@
     transform:scale(1.04);
   }
 
+  /* ---- 图解导入区 ---- */
+  .collapse-toggle{
+    width:100%;
+    margin-top:14px;
+    border:none;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.5px;
+    color:#e2678f;
+    background:#fff4f9;
+    border-radius:14px;
+    padding:12px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    transition:background .18s;
+  }
+  .collapse-toggle:active{ background:#ffe9f3; }
+  .collapse-toggle .arrow{
+    transition:transform .25s;
+    font-size:11px;
+    color:#d98cab;
+  }
+  .collapse-toggle.open .arrow{ transform:rotate(180deg); }
+
+  .chart-import{
+    display:none;
+    margin-top:12px;
+    padding:14px;
+    background:#fffafc;
+    border-radius:18px;
+  }
+  .chart-import.show{ display:block; animation:fadeIn .2s ease both; }
+
+  .import-hint{
+    font-size:11.5px;
+    color:#c8a5b5;
+    line-height:1.7;
+    margin:0 0 10px;
+  }
+
+  .import-row{ display:flex; gap:8px; }
+  .import-btn{
+    flex:1 1 0;
+    border:none;
+    font-family:inherit;
+    padding:11px 6px;
+    border-radius:14px;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:.5px;
+    background:#fff0f6;
+    color:#e2678f;
+    transition:transform .12s, background .18s;
+  }
+  .import-btn:active{ background:#ffe0ee; transform:scale(.97); }
+
+  .chart-preview{
+    display:none;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:12px;
+    max-height:158px;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .chart-preview.show{ display:flex; }
+
+  .thumb{
+    position:relative;
+    width:54px; height:54px;
+    border-radius:13px;
+    overflow:hidden;
+    background:#fff0f6;
+    flex:0 0 auto;
+  }
+  .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .thumb span{
+    position:absolute;
+    left:3px; bottom:3px;
+    background:rgba(201,72,111,.86);
+    color:#fff;
+    font-size:9.5px;
+    padding:1px 5px;
+    border-radius:7px;
+  }
+
+  .text-chip{
+    font-size:11.5px;
+    padding:7px 11px;
+    border-radius:11px;
+    background:#fff0f6;
+    color:#c9486f;
+    flex:0 0 auto;
+  }
+
+  .chart-textarea{
+    width:100%;
+    min-height:86px;
+    resize:none;
+    margin-top:10px;
+    border:1.5px solid var(--line);
+    border-radius:15px;
+    font-family:inherit;
+    font-size:13.5px;
+    line-height:1.75;
+    color:var(--text);
+    background:#fff8fb;
+    padding:12px 13px;
+    outline:none;
+    display:none;
+  }
+  .chart-textarea.show{ display:block; }
+  .chart-textarea:focus{ border-color:#ffb3cf; }
+  .chart-textarea::placeholder{ color:#d9bfcb; }
+
+  .modal-textarea{
+    width:100%;
+    min-height:118px;
+    resize:none;
+    border:1.5px solid var(--line);
+    border-radius:15px;
+    font-family:inherit;
+    font-size:14.5px;
+    line-height:1.75;
+    color:var(--text);
+    background:#fff8fb;
+    padding:12px 14px;
+    outline:none;
+  }
+  .modal-textarea:focus{ border-color:#ffb3cf; }
+  .modal-textarea::placeholder{ color:#d9bfcb; }
+
   .confirm-text{
     margin:0 0 20px;
     font-size:14.5px;
@@ -488,18 +699,18 @@
 
   .modal-actions{
     display:flex;
-    gap:11px;
+    gap:9px;
     margin-top:20px;
   }
   .modal-actions button{
     flex:1 1 0;
-    padding:13px;
+    padding:13px 4px;
     border:none;
     border-radius:16px;
     font-family:inherit;
-    font-size:15px;
+    font-size:14px;
     font-weight:600;
-    letter-spacing:1px;
+    letter-spacing:.5px;
     transition:transform .12s;
   }
   .modal-actions button:active{ transform:scale(.96); }
@@ -566,6 +777,18 @@
 
     <div class="detail-body">
 
+      <!-- ★ 每行图解（页面上方） -->
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">📖 第 <b id="chartRowNum">1</b> 行图解</div>
+          <div class="chart-tools">
+            <button class="mini-btn" id="chartImgBtn" type="button">📷 图片</button>
+            <button class="mini-btn" id="chartTextBtn" type="button">✏️ 文字</button>
+          </div>
+        </div>
+        <div class="chart-body" id="chartBody"></div>
+      </div>
+
       <div class="counter-card">
         <div class="counter-label">当 前 行 数</div>
         <div class="counter">
@@ -590,18 +813,39 @@
 
 </div>
 
+<!-- 详情页隐藏的图片选择器 -->
+<input type="file" id="detailFileInput" accept="image/*" hidden>
+
 <!-- ================= 新建 / 重命名 弹窗 ================= -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <h3 id="modalTitle">新建钩织项目</h3>
     <input id="modalInput" type="text" maxlength="20" placeholder="给项目起个名字吧～">
     <div class="icon-grid" id="iconGrid"></div>
+
+    <!-- 图解导入（仅新建时显示） -->
+    <button type="button" class="collapse-toggle" id="chartToggle">
+      <span id="chartToggleText">🧵 导入钩织图解（可选）</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="chart-import" id="chartImportArea">
+      <p class="import-hint">图片按顺序对应第 1 行、第 2 行…；文字图解每行输入一行内容。</p>
+      <div class="import-row">
+        <button type="button" class="import-btn" id="pickImagesBtn">📷 选择图片</button>
+        <button type="button" class="import-btn" id="pickTextBtn">✏️ 文字图解</button>
+      </div>
+      <textarea class="chart-textarea" id="chartTextInput"
+        placeholder="第1行：环形起针 6X&#10;第2行：6V&#10;第3行：(X,V)*6"></textarea>
+      <div class="chart-preview" id="chartPreview"></div>
+    </div>
+
     <div class="modal-actions">
       <button class="btn-ghost" id="modalCancel">取消</button>
       <button class="btn-primary" id="modalOk">创建</button>
     </div>
   </div>
 </div>
+<input type="file" id="chartFileInput" accept="image/*" multiple hidden>
 
 <!-- ================= 删除确认弹窗 ================= -->
 <div class="modal" id="confirmModal">
@@ -611,6 +855,20 @@
     <div class="modal-actions">
       <button class="btn-ghost" id="confirmCancel">取消</button>
       <button class="btn-danger" id="confirmOk">删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 文字图解弹窗 ================= -->
+<div class="modal" id="textChartModal">
+  <div class="modal-box">
+    <h3 id="textChartTitle">文字图解</h3>
+    <textarea id="textChartInput" class="modal-textarea"
+      placeholder="输入这一行的图解文字说明…"></textarea>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="textChartClear">清除</button>
+      <button class="btn-ghost" id="textChartCancel">取消</button>
+      <button class="btn-primary" id="textChartOk">确定</button>
     </div>
   </div>
 </div>
@@ -625,6 +883,7 @@
   const STORAGE_KEY = 'crochet_records_v1';
   const ICONS = ['🧶','🌸','🐻','🍓','🐰','🌈','🎀','🍑','🐱','☁️','🌷','🧸','🦄','🍰','💐','🐳','🍒','⭐'];
   const ACTION_W = 140;
+  const MAX_IMAGES = 50;
 
   let projects = [];
   let currentId = null;
@@ -634,6 +893,15 @@
   let editingId = null;
   let selectedIcon = ICONS[0];
   let pendingDeleteId = null;
+
+  /* 新建弹窗中暂存的图解 */
+  let pendingImages = [];       // dataURL 数组
+  let pendingTextLines = [];    // 字符串数组
+
+  /* 文字图解弹窗 */
+  let textChartRow = null;
+
+  let quotaWarned = false;
 
   /* ================== 工具函数 ================== */
   const $ = id => document.getElementById(id);
@@ -650,7 +918,43 @@
     t.textContent = msg;
     t.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 1700);
+  }
+
+  /* ================== 图片压缩 ================== */
+  function compressImage(file, maxW, quality){
+    return new Promise(function(resolve, reject){
+      if(!file || !/^image\//.test(file.type)){
+        reject(new Error('不是图片文件'));
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e){
+        const img = new Image();
+        img.onload = function(){
+          let w = img.width || 1;
+          let h = img.height || 1;
+          if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+          if(h > maxW * 1.6){ w = Math.round(w * (maxW * 1.6) / h); h = Math.round(maxW * 1.6); }
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, w);
+          canvas.height = Math.max(1, h);
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          try{
+            resolve(canvas.toDataURL('image/jpeg', quality || 0.72));
+          }catch(err){
+            reject(err);
+          }
+        };
+        img.onerror = function(){ reject(new Error('图片解析失败')); };
+        img.src = e.target.result;
+      };
+      reader.onerror = function(){ reject(new Error('文件读取失败')); };
+      reader.readAsDataURL(file);
+    });
   }
 
   /* ================== 数据持久化 ================== */
@@ -662,9 +966,9 @@
     }catch(e){
       projects = [];
     }
-    // 兼容性补齐
-    projects.forEach(p => {
+    projects.forEach(function(p){
       p.history = Array.isArray(p.history) ? p.history : [];
+      p.charts = Array.isArray(p.charts) ? p.charts : [];
       p.row = Math.max(1, parseInt(p.row, 10) || 1);
       p.note = p.note || '';
       p.icon = p.icon || '🧶';
@@ -674,18 +978,26 @@
   function saveData(){
     try{
       localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+      return true;
     }catch(e){
-      toast('存储空间不足 😢');
+      if(!quotaWarned){
+        quotaWarned = true;
+        toast('存储空间不足，请减少图片图解 😢');
+        setTimeout(function(){ quotaWarned = false; }, 4000);
+      }
+      return false;
     }
   }
 
   const getProject = id => projects.find(p => p.id === id);
 
+  const chartCount = p => (p.charts || []).filter(Boolean).length;
+
   /* ================== 左滑逻辑 ================== */
   function setSwipe(card, open){
     if(!card) return;
     card.style.transition = 'transform .26s cubic-bezier(.2,.8,.3,1)';
-    card.style.transform = open ? `translateX(${-ACTION_W}px)` : 'translateX(0)';
+    card.style.transform = open ? 'translateX(' + (-ACTION_W) + 'px)' : 'translateX(0)';
     card._open = open;
     if(open){
       if(openCardEl && openCardEl !== card){
@@ -742,7 +1054,7 @@
     }, { passive: false });
 
     function endSwipe(){
-      if(locked !== 'x'){ dx = baseX; }
+      if(locked !== 'x') dx = baseX;
       setSwipe(card, dx < -ACTION_W / 2);
     }
     card.addEventListener('touchend', endSwipe);
@@ -768,7 +1080,6 @@
       const wrap = document.createElement('div');
       wrap.className = 'swipe-wrap';
 
-      /* --- 右侧操作按钮 --- */
       const actions = document.createElement('div');
       actions.className = 'swipe-actions';
 
@@ -793,15 +1104,18 @@
       actions.appendChild(renameBtn);
       actions.appendChild(delBtn);
 
-      /* --- 卡片主体 --- */
       const card = document.createElement('div');
       card.className = 'card';
       card._open = false;
+
+      const cc = chartCount(p);
+      const chartInfo = cc ? ' · 📖 ' + cc + ' 行图解' : '';
+
       card.innerHTML =
         '<div class="p-icon">' + esc(p.icon) + '</div>' +
         '<div class="p-info">' +
           '<div class="p-name">' + esc(p.name) + '</div>' +
-          '<div class="p-rows">当前 <b>' + p.row + '</b> 行</div>' +
+          '<div class="p-rows">当前 <b>' + p.row + '</b> 行' + chartInfo + '</div>' +
         '</div>' +
         '<button class="edit-btn" type="button">编辑</button>';
 
@@ -824,7 +1138,6 @@
     });
   }
 
-  /* 点击空白处收起左滑 */
   document.addEventListener('click', function(e){
     if(!e.target.closest('.swipe-wrap')){
       closeAllSwipe();
@@ -848,20 +1161,69 @@
     });
   }
 
+  /* ---- 图解导入区渲染 ---- */
+  function renderChartPreview(){
+    const box = $('chartPreview');
+    let html = '';
+
+    if(pendingImages.length){
+      pendingImages.forEach(function(src, i){
+        html += '<div class="thumb"><img src="' + src + '" alt=""><span>' + (i + 1) + '</span></div>';
+      });
+    }else if(pendingTextLines.length){
+      pendingTextLines.forEach(function(t, i){
+        const short = t.length > 7 ? t.slice(0, 7) + '…' : t;
+        html += '<div class="text-chip">第' + (i + 1) + '行 · ' + esc(short) + '</div>';
+      });
+    }
+
+    if(html){
+      box.innerHTML = html;
+      box.classList.add('show');
+    }else{
+      box.innerHTML = '';
+      box.classList.remove('show');
+    }
+
+    // 更新折叠按钮文案
+    const n = pendingImages.length || pendingTextLines.length;
+    $('chartToggleText').textContent = n
+      ? '🧵 已导入 ' + n + ' 行图解'
+      : '🧵 导入钩织图解（可选）';
+  }
+
+  function resetPendingCharts(){
+    pendingImages = [];
+    pendingTextLines = [];
+    $('chartTextInput').value = '';
+    $('chartPreview').innerHTML = '';
+    $('chartPreview').classList.remove('show');
+    $('chartToggleText').textContent = '🧵 导入钩织图解（可选）';
+    $('chartToggle').classList.remove('open');
+    $('chartImportArea').classList.remove('show');
+    $('chartTextInput').classList.remove('show');
+  }
+
   function openCreateModal(){
     modalMode = 'create';
     editingId = null;
     selectedIcon = ICONS[0];
+
     $('modalTitle').textContent = '新建钩织项目';
     $('modalOk').textContent = '创建';
+    $('chartToggle').style.display = 'flex';
+
     const input = $('modalInput');
     input.value = '';
     input.placeholder = '给项目起个名字吧～';
-    $('iconGrid').style.display = 'grid';
+
     const grid = $('iconGrid');
     grid.querySelectorAll('.icon-opt').forEach(function(b, i){
       b.classList.toggle('sel', i === 0);
     });
+
+    resetPendingCharts();
+
     $('modal').classList.add('show');
     setTimeout(function(){ input.focus(); }, 120);
   }
@@ -871,12 +1233,16 @@
     if(!p) return;
     modalMode = 'rename';
     editingId = id;
+
     $('modalTitle').textContent = '重命名项目';
     $('modalOk').textContent = '保存';
+    $('chartToggle').style.display = 'none';
+    $('chartImportArea').classList.remove('show');
+
     const input = $('modalInput');
     input.value = p.name;
     input.placeholder = '输入新的名称';
-    $('iconGrid').style.display = 'none';
+
     $('modal').classList.add('show');
     setTimeout(function(){ input.focus(); input.select(); }, 120);
   }
@@ -884,8 +1250,77 @@
   function closeModal(){
     $('modal').classList.remove('show');
     $('modalInput').blur();
+    $('chartTextInput').blur();
   }
 
+  /* ---- 折叠切换 ---- */
+  $('chartToggle').addEventListener('click', function(){
+    const area = $('chartImportArea');
+    const open = area.classList.toggle('show');
+    this.classList.toggle('open', open);
+  });
+
+  /* ---- 图片选择 ---- */
+  $('pickImagesBtn').addEventListener('click', function(){
+    $('chartFileInput').click();
+  });
+
+  $('chartFileInput').addEventListener('change', function(e){
+    const input = this;
+    const files = Array.prototype.slice.call(e.target.files || []);
+    input.value = '';
+    if(!files.length) return;
+
+    toast('正在处理图片…');
+
+    const tasks = files.map(function(f){
+      return compressImage(f, 720, 0.72).catch(function(){ return null; });
+    });
+
+    Promise.all(tasks).then(function(results){
+      const ok = results.filter(Boolean);
+      if(!ok.length){
+        toast('图片处理失败，请换一张试试');
+        return;
+      }
+      // 图片与文字互斥
+      pendingTextLines = [];
+      $('chartTextInput').value = '';
+      $('chartTextInput').classList.remove('show');
+
+      pendingImages = pendingImages.concat(ok);
+      if(pendingImages.length > MAX_IMAGES){
+        pendingImages = pendingImages.slice(0, MAX_IMAGES);
+      }
+      renderChartPreview();
+      toast('已添加 ' + ok.length + ' 张图解 🌸');
+    });
+  });
+
+  /* ---- 文字图解（新建） ---- */
+  $('pickTextBtn').addEventListener('click', function(){
+    const ta = $('chartTextInput');
+    ta.classList.add('show');
+    if(pendingImages.length){
+      pendingImages = [];
+      renderChartPreview();
+    }
+    ta.focus();
+  });
+
+  $('chartTextInput').addEventListener('input', function(){
+    const lines = this.value.split('\n')
+      .map(function(s){ return s.trim(); })
+      .filter(function(s){ return s.length > 0; });
+
+    if(lines.length){
+      pendingImages = [];
+    }
+    pendingTextLines = lines;
+    renderChartPreview();
+  });
+
+  /* ---- 弹窗按钮 ---- */
   $('modalCancel').addEventListener('click', closeModal);
   $('modal').addEventListener('click', function(e){
     if(e.target === $('modal')) closeModal();
@@ -895,18 +1330,32 @@
     const name = $('modalInput').value.trim();
 
     if(modalMode === 'create'){
+      // 组装图解
+      let charts = [];
+      if(pendingImages.length){
+        charts = pendingImages.map(function(src){
+          return { type: 'image', src: src };
+        });
+      }else if(pendingTextLines.length){
+        charts = pendingTextLines.map(function(t){
+          return { type: 'text', text: t };
+        });
+      }
+
       projects.unshift({
         id: uid(),
         icon: selectedIcon,
         name: name || '未命名项目',
         row: 1,
         note: '',
-        history: []
+        history: [],
+        charts: charts
       });
       saveData();
       renderList();
+      resetPendingCharts();
       closeModal();
-      toast('项目创建成功 🎉');
+      toast(charts.length ? '项目已创建，图解已导入 🎉' : '项目创建成功 🎉');
     }else{
       const p = getProject(editingId);
       if(p){
@@ -971,11 +1420,11 @@
     $('rowNum').textContent = p.row;
     $('noteInput').value = p.note || '';
 
+    renderChart();
     renderHistory();
 
     $('listPage').classList.remove('active');
     $('detailPage').classList.add('active');
-    $('detailPage').scrollTop = 0;
     document.querySelector('.detail-body').scrollTop = 0;
   }
 
@@ -994,6 +1443,34 @@
     if(showToast) toast('已保存 ✨');
   }
 
+  /* ---- 图解渲染 ---- */
+  function renderChart(){
+    const p = getProject(currentId);
+    if(!p) return;
+
+    const row = p.row;
+    $('chartRowNum').textContent = row;
+
+    const body = $('chartBody');
+    const item = (p.charts || [])[row - 1];
+
+    const emptyHtml =
+      '<div class="chart-empty">这一行还没有图解 🌱<br>' +
+      '<span>点击右上角「图片 / 文字」添加</span></div>';
+
+    if(!item){
+      body.innerHTML = emptyHtml;
+      return;
+    }
+    if(item.type === 'image' && item.src){
+      body.innerHTML = '<img src="' + item.src + '" alt="第' + row + '行图解">';
+    }else if(item.type === 'text' && item.text){
+      body.innerHTML = '<div class="chart-text">' + esc(item.text) + '</div>';
+    }else{
+      body.innerHTML = emptyHtml;
+    }
+  }
+
   function renderHistory(){
     const p = getProject(currentId);
     const box = $('historyList');
@@ -1002,9 +1479,7 @@
       return;
     }
     box.innerHTML = p.history.map(function(h){
-      const noteHtml = h.note
-        ? esc(h.note)
-        : '<i>（无备注）</i>';
+      const noteHtml = h.note ? esc(h.note) : '<i>（无备注）</i>';
       return '<div class="hist-item">' +
                '<span class="hist-row">第 ' + h.row + ' 行</span>' +
                '<span class="hist-note">' + noteHtml + '</span>' +
@@ -1042,10 +1517,98 @@
 
     $('rowNum').textContent = p.row;
     bumpNumber();
+
     renderHistory();
+    renderChart();   /* ★ 切换行后刷新上方图解 */
     saveData();
   }
 
+  /* ---- 当前行图解：图片 ---- */
+  $('chartImgBtn').addEventListener('click', function(){
+    if(!currentId) return;
+    $('detailFileInput').click();
+  });
+
+  $('detailFileInput').addEventListener('change', function(e){
+    const input = this;
+    const file = (e.target.files || [])[0];
+    input.value = '';
+    if(!file) return;
+
+    const p = getProject(currentId);
+    if(!p) return;
+
+    toast('正在处理图片…');
+    compressImage(file, 900, 0.75).then(function(src){
+      if(!Array.isArray(p.charts)) p.charts = [];
+      p.charts[p.row - 1] = { type: 'image', src: src };
+      saveData();
+      renderChart();
+      toast('已添加第 ' + p.row + ' 行图解 📷');
+    }).catch(function(){
+      toast('图片处理失败，请换一张试试');
+    });
+  });
+
+  /* ---- 当前行图解：文字 ---- */
+  $('chartTextBtn').addEventListener('click', function(){
+    const p = getProject(currentId);
+    if(!p) return;
+    textChartRow = p.row;
+    const item = (p.charts || [])[p.row - 1];
+    $('textChartTitle').textContent = '第 ' + p.row + ' 行 · 文字图解';
+    $('textChartInput').value = (item && item.type === 'text') ? item.text : '';
+    $('textChartModal').classList.add('show');
+    setTimeout(function(){ $('textChartInput').focus(); }, 120);
+  });
+
+  $('textChartCancel').addEventListener('click', function(){
+    $('textChartModal').classList.remove('show');
+  });
+
+  $('textChartModal').addEventListener('click', function(e){
+    if(e.target === $('textChartModal')){
+      $('textChartModal').classList.remove('show');
+    }
+  });
+
+  $('textChartOk').addEventListener('click', function(){
+    const p = getProject(currentId);
+    if(p && textChartRow){
+      const val = $('textChartInput').value.trim();
+      if(!Array.isArray(p.charts)) p.charts = [];
+      if(val){
+        p.charts[textChartRow - 1] = { type: 'text', text: val };
+      }else{
+        p.charts[textChartRow - 1] = null;
+      }
+      saveData();
+      renderChart();
+      toast(val ? '已保存第 ' + textChartRow + ' 行图解 ✏️' : '已清除本行图解');
+    }
+    $('textChartModal').classList.remove('show');
+  });
+
+  $('textChartClear').addEventListener('click', function(){
+    const p = getProject(currentId);
+    if(p && textChartRow){
+      if(!Array.isArray(p.charts)) p.charts = [];
+      p.charts[textChartRow - 1] = null;
+      saveData();
+      renderChart();
+      toast('已清除本行图解');
+    }
+    $('textChartModal').classList.remove('show');
+  });
+
+  $('textChartInput').addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && (e.metaKey || e.ctrlKey)){
+      e.preventDefault();
+      $('textChartOk').click();
+    }
+  });
+
+  /* ---- 计数器 / 顶部按钮 ---- */
   $('plusBtn').addEventListener('click', function(){ changeRow(1); });
   $('minusBtn').addEventListener('click', function(){ changeRow(-1); });
   $('backBtn').addEventListener('click', goBackToList);
